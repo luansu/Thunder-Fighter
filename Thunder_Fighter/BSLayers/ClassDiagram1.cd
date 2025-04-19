@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Thunder_Fighter.BSLayers.BigEnemy" Collapsed="true">
+    <Position X="3.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAIAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BSLayers\BigEnemy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.BossEnemy" Collapsed="true">
+    <Position X="5.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAgAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BSLayers\Boss.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.Dart" Collapsed="true">
+    <Position X="11" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAABAFAQAAQAhgAGAIQAA=</HashCode>
+      <FileName>BSLayers\Dart.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.Enemy" Collapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQAAABAAAAAAAAgEAAIAAAAABACBAAAQQhggGAIRAg=</HashCode>
+      <FileName>BSLayers\Enemy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.Engine" Collapsed="true">
+    <Position X="11" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAABABAAAAQAhgAGAKQAA=</HashCode>
+      <FileName>BSLayers\Engine.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.EngineEff" Collapsed="true">
+    <Position X="11" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BSLayers\EngineEff.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.Fighter" Collapsed="true">
+    <Position X="9" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAABAAAAACABAAAAAAAIAAFAAAAQAhgAGQOQAg=</HashCode>
+      <FileName>BSLayers\Fighter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.Item" Collapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAgAAAAAAAAAAAAAAFAAAAQAhgAGAIQAg=</HashCode>
+      <FileName>BSLayers\Item.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.SmallEnemy" Collapsed="true">
+    <Position X="2" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAIAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BSLayers\SmallEnemy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Thunder_Fighter.BSLayers.Sprite" Collapsed="true">
+    <Position X="8" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAABAEAQAAgAAAAAAAAAAAAAAAAAAAAAAAAABBAA=</HashCode>
+      <FileName>BSLayers\Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Thunder_Fighter.BSLayers.IObject" Collapsed="true">
+    <Position X="11" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAIQAA=</HashCode>
+      <FileName>BSLayers\IObject.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

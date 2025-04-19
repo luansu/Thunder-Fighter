@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Thunder_Fighter.BSLayers
 {
-    class Enemy : IObject
+    abstract class Enemy : IObject
     {
-        public int type; // 0: nhỏ, 1: lớn, 2: boss
         public int x, y, w, h;
         public int health;
         public Sprite sprite;
-        public int dx = 2; // hướng ngang
-        public int dy = 2; // hướng dọc
-        public int minY = 0; // phạm vi di chuyển Y tối đa (giới hạn phía trên)
+        public int dx = 2;
+        public int dy = 2;
+        public int minY = 0;
         public int maxY = 200;
-        public int movementMode = 0; // 0: zigzag, 1: horizontal
+        public int movementMode = 0;
 
-        public Enemy(int type, int x, int y, int w, int h, int health, Sprite sprite)
+        public bool isDead = false;
+        public bool isExploding = false;
+        public int explosionFrame = 0;
+        public Sprite explosionSprite;
+
+        public Enemy(int x, int y, int w, int h, int health, Sprite sprite)
         {
-            this.type = type;
             this.x = x;
             this.y = y;
             this.w = w;
@@ -29,8 +33,37 @@ namespace Thunder_Fighter.BSLayers
             this.sprite = sprite;
         }
 
-        public void update()
+        public abstract int GetEnemyType(); // 0: small, 1: big, 2: boss
+
+        public virtual void TakeDamage(float dmg)
         {
+            health -= (int)dmg;
+            if (health <= 0 && !isDead)
+            {
+                Die();
+            }
+        }
+
+        public virtual void Die()
+        {
+            isDead = true;
+            isExploding = true;
+            explosionFrame = 0;
+            // explosionSprite will be loaded in subclass
+        }
+
+        public virtual void Update()
+        {
+            if (isExploding)
+            {
+                explosionFrame++;
+                if (explosionSprite != null && explosionFrame >= explosionSprite.bitmaps.Count)
+                {
+                    isExploding = false;
+                }
+                return;
+            }
+
             x += dx;
             if (movementMode == 0)
                 y += dy;
@@ -45,9 +78,17 @@ namespace Thunder_Fighter.BSLayers
             }
         }
 
-        public void paint(ref Graphics g)
+        public virtual void Paint(ref Graphics g)
         {
-            sprite.Draw(ref g, x, y, w, h);
+            if (isExploding && explosionSprite != null)
+            {
+                explosionSprite.index = explosionFrame;
+                explosionSprite.Draw(ref g, x, y, w, h);
+            }
+            else
+            {
+                sprite.Draw(ref g, x, y, w, h);
+            }
         }
 
         public int getX() => x;
