@@ -22,6 +22,7 @@ namespace Thunder_Fighter
         Fighter player = new Fighter("Player", 100, 100);
         List<Enemy> enemies = new List<Enemy>();
         List<Enemy> currentWave = new List<Enemy>();
+        List<EnemyBullet> allEnemyBullets = new List<EnemyBullet>();
         Random rand = new Random();
         DateTime startTime = DateTime.Now;
         double lastBigEnemySpawnTime = -10;
@@ -30,7 +31,7 @@ namespace Thunder_Fighter
         bool hasTriggeredMassDestruction = false;
         bool hasSpawnedBoss = false;
         bool stopEnemySpawning = false;
-        int bossSpawnCountdown = 0; // frame countdown for 2s
+        int bossSpawnCountdown = 0;
 
         public Form1()
         {
@@ -80,14 +81,12 @@ namespace Thunder_Fighter
         {
             double secondsElapsed = (DateTime.Now - startTime).TotalSeconds;
 
-            // Spawn BigEnemy mỗi 10s sau 15s đầu
             if (!stopEnemySpawning && secondsElapsed >= 15 && (secondsElapsed - lastBigEnemySpawnTime >= 10))
             {
                 spawnBigEnemy();
                 lastBigEnemySpawnTime = secondsElapsed;
             }
 
-            // Đếm ngược để spawn boss sau khi toàn bộ enemy nổ
             if (bossSpawnCountdown > 0)
             {
                 bossSpawnCountdown--;
@@ -102,6 +101,22 @@ namespace Thunder_Fighter
                 enemy.Update();
 
             enemies.RemoveAll(e => e.isDead && !e.isExploding);
+
+            // Gom tất cả đạn enemy
+            allEnemyBullets.Clear();
+            foreach (var enemy in enemies)
+                allEnemyBullets.AddRange(enemy.bullets);
+
+            // Kiểm tra va chạm đạn với player
+            foreach (var b in allEnemyBullets)
+            {
+                if (IsColliding(b, player))
+                {
+                    player.health -= (int)b.damage;
+                    b.y = 9999;
+                }
+            }
+            allEnemyBullets.RemoveAll(b => b.y > 1000);
 
             if (!stopEnemySpawning && currentWave.Count > 0 && currentWave.All(e => e.isDead))
             {
@@ -121,6 +136,9 @@ namespace Thunder_Fighter
             foreach (var enemy in enemies)
                 enemy.Paint(ref g);
 
+            foreach (var b in allEnemyBullets)
+                b.Paint(ref g);
+
             player.paint(ref g);
             this.plMain.CreateGraphics().DrawImage(screen, 0, 0);
         }
@@ -131,7 +149,6 @@ namespace Thunder_Fighter
             else if (e.KeyChar == (char)Keys.D) player.move(speed, 0);
             else if (e.KeyChar == (char)Keys.W) player.move(0, -speed);
             else if (e.KeyChar == (char)Keys.S) player.move(0, speed);
-
             else if (e.KeyChar == 'k' || e.KeyChar == 'K')
             {
                 if (enemies.Count > 0 && !enemies[0].isDead)
@@ -141,7 +158,6 @@ namespace Thunder_Fighter
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            // dự phòng
         }
 
         private void spawnSmallEnemyWave()
@@ -190,7 +206,7 @@ namespace Thunder_Fighter
 
             hasTriggeredMassDestruction = true;
             stopEnemySpawning = true;
-            bossSpawnCountdown = fps * 2; // 2 giây đếm theo frame
+            bossSpawnCountdown = fps * 2;
         }
 
         private void spawnBossEnemy()
@@ -199,6 +215,13 @@ namespace Thunder_Fighter
             int y = -400;
             Enemy boss = new BossEnemy(x, y);
             enemies.Add(boss);
+        }
+
+        private bool IsColliding(IObject a, IObject b)
+        {
+            Rectangle ra = new Rectangle(a.getX(), a.getY(), a.getW(), a.getH());
+            Rectangle rb = new Rectangle(b.getX(), b.getY(), b.getW(), b.getH());
+            return ra.IntersectsWith(rb);
         }
     }
 }

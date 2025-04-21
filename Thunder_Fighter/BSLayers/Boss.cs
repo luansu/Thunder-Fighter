@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace Thunder_Fighter.BSLayers
@@ -13,11 +9,11 @@ namespace Thunder_Fighter.BSLayers
         private int targetY = 40;
 
         public BossEnemy(int x, int y)
-            : base(x, y, 350, 350, 500, LoadBossSprite()) // máu boss cao hơn
+            : base(x, y, 350, 350, 500, LoadBossSprite())
         {
             dx = 2;
             dy = 3;
-            movementMode = 0; // di chuyển cả X & Y khi cần
+            movementMode = 0;
         }
 
         private static Sprite LoadBossSprite()
@@ -38,17 +34,13 @@ namespace Thunder_Fighter.BSLayers
                 return;
             }
 
-            // Giai đoạn boss đang bay xuống
             if (isEntering)
             {
                 y += dy;
-
                 if (y >= targetY)
                 {
                     y = targetY;
                     isEntering = false;
-
-                    // Bắt đầu di chuyển như BigEnemy
                     dx = 2;
                     dy = 0;
                     movementMode = 1;
@@ -56,7 +48,24 @@ namespace Thunder_Fighter.BSLayers
             }
             else
             {
-                base.Update(); // di chuyển ngang qua lại như thường
+                base.Update();
+            }
+        }
+
+        public override void FireBullet()
+        {
+            if (fireCooldown == 0)
+            {
+                int bulletW = 20;
+                int bulletH = 40;
+                int centerX = x + w / 2;
+                int bulletY = y + h / 2 - bulletH / 2;
+
+                bullets.Add(new EnemyBullet(centerX - 40, bulletY, 2));
+                bullets.Add(new EnemyBullet(centerX - bulletW / 2, bulletY, 2));
+                bullets.Add(new EnemyBullet(centerX + 20, bulletY, 2));
+
+                fireCooldown = fireInterval;
             }
         }
 
@@ -69,4 +78,3 @@ namespace Thunder_Fighter.BSLayers
         }
     }
 }
-

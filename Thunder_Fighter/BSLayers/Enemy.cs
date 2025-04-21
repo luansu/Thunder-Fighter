@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 
 namespace Thunder_Fighter.BSLayers
@@ -12,16 +9,19 @@ namespace Thunder_Fighter.BSLayers
         public int x, y, w, h;
         public int health;
         public Sprite sprite;
-        public int dx = 2;
-        public int dy = 2;
-        public int minY = 0;
-        public int maxY = 200;
+        public int dx = 2, dy = 2;
+        public int minY = 0, maxY = 200;
         public int movementMode = 0;
 
         public bool isDead = false;
         public bool isExploding = false;
         public int explosionFrame = 0;
         public Sprite explosionSprite;
+
+        public List<EnemyBullet> bullets = new List<EnemyBullet>();
+        protected int fireCooldown = 0;
+        protected int fireInterval = 60;
+        protected int animationCounter = 0;
 
         public Enemy(int x, int y, int w, int h, int health, Sprite sprite)
         {
@@ -33,7 +33,7 @@ namespace Thunder_Fighter.BSLayers
             this.sprite = sprite;
         }
 
-        public abstract int GetEnemyType(); // 0: small, 1: big, 2: boss
+        public abstract int GetEnemyType();
 
         public virtual void TakeDamage(float dmg)
         {
@@ -49,7 +49,19 @@ namespace Thunder_Fighter.BSLayers
             isDead = true;
             isExploding = true;
             explosionFrame = 0;
-            // explosionSprite will be loaded in subclass
+        }
+
+        public virtual void FireBullet()
+        {
+            if (fireCooldown == 0)
+            {
+                int bulletW = 20, bulletH = 40;
+                int bulletX = x + (w - bulletW) / 2;
+                int bulletY = y + h / 2 - bulletH / 2;
+
+                bullets.Add(new EnemyBullet(bulletX, bulletY, GetEnemyType()));
+                fireCooldown = fireInterval;
+            }
         }
 
         public virtual void Update()
@@ -58,24 +70,23 @@ namespace Thunder_Fighter.BSLayers
             {
                 explosionFrame++;
                 if (explosionSprite != null && explosionFrame >= explosionSprite.bitmaps.Count)
-                {
                     isExploding = false;
-                }
                 return;
             }
 
             x += dx;
-            if (movementMode == 0)
-                y += dy;
+            if (movementMode == 0) y += dy;
 
-            if (x <= 0 || x + w >= 360 * 3 / 2)
-                dx = -dx;
+            if (x <= 0 || x + w >= 360 * 3 / 2) dx = -dx;
+            if (movementMode == 0 && (y <= minY || y + h >= maxY)) dy = -dy;
 
-            if (movementMode == 0)
-            {
-                if (y <= minY || y + h >= maxY)
-                    dy = -dy;
-            }
+            if (fireCooldown > 0) fireCooldown--;
+            FireBullet();
+
+            foreach (var b in bullets)
+                b.Update();
+
+            bullets.RemoveAll(b => b.y > 1000);
         }
 
         public virtual void Paint(ref Graphics g)
@@ -85,10 +96,19 @@ namespace Thunder_Fighter.BSLayers
                 explosionSprite.index = explosionFrame;
                 explosionSprite.Draw(ref g, x, y, w, h);
             }
-            else
+            else if (sprite != null && sprite.bitmaps.Count > 0)
             {
+                animationCounter++;
+                if (animationCounter % 2 == 0)
+                {
+                    sprite.index = (sprite.index + 1) % sprite.bitmaps.Count;
+                }
+
                 sprite.Draw(ref g, x, y, w, h);
             }
+
+            foreach (var b in bullets)
+                b.Paint(ref g);
         }
 
         public int getX() => x;
