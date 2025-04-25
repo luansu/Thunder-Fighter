@@ -59,8 +59,8 @@ namespace Thunder_Fighter.BSLayers
                 case 2:
                     speed = 3;
                     damage = 20;
-                    w = 20;
-                    h = 40;
+                    w = 120;
+                    h = 240;
                     break;
             }
         }

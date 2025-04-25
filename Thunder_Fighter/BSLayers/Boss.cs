@@ -56,18 +56,45 @@ namespace Thunder_Fighter.BSLayers
         {
             if (fireCooldown == 0)
             {
-                int bulletW = 20;
-                int bulletH = 40;
-                int centerX = x + w / 2;
-                int bulletY = y + h / 2 - bulletH / 2;
+                int bulletW = 100;
+                int bulletH = 200;
 
-                bullets.Add(new EnemyBullet(centerX - 40, bulletY, 2));
-                bullets.Add(new EnemyBullet(centerX - bulletW / 2, bulletY, 2));
-                bullets.Add(new EnemyBullet(centerX + 20, bulletY, 2));
+                int centerX = x + w / 2;
+                int bulletY = y + h - 130;
+
+                var bullet1 = new EnemyBullet(centerX - bulletW - 10, bulletY, 2);
+                bullet1.w = bulletW;
+                bullet1.h = bulletH;
+
+                var bullet2 = new EnemyBullet(centerX - bulletW / 2, bulletY, 2);
+                bullet2.w = bulletW;
+                bullet2.h = bulletH;
+
+                var bullet3 = new EnemyBullet(centerX + bulletW + 10 - bulletW, bulletY, 2);
+                bullet3.w = bulletW;
+                bullet3.h = bulletH;
+
+                bullets.Add(bullet1);
+                bullets.Add(bullet2);
+                bullets.Add(bullet3);
 
                 fireCooldown = fireInterval;
             }
         }
+
+        public override void Paint(ref Graphics g)
+        {
+            // Vẽ các viên đạn trước (nằm dưới Boss)
+            foreach (var bullet in bullets)
+            {
+                bullet.Paint(ref g);
+            }
+
+            // Vẽ Boss sau (nằm trên đạn)
+            base.Paint(ref g);
+        }
+
+
 
         public override void Die()
         {

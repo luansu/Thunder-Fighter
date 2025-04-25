@@ -66,7 +66,7 @@ namespace Thunder_Fighter
             player.w = 120;
             player.x = width / 2 - player.getW() / 2;
             player.y = height - 50 - player.getH();
-
+            spawnBossEnemy();
             spawnSmallEnemyWave();
         }
 
