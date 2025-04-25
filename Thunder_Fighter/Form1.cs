@@ -66,7 +66,6 @@ namespace Thunder_Fighter
             player.w = 120;
             player.x = width / 2 - player.getW() / 2;
             player.y = height - 50 - player.getH();
-            spawnBossEnemy();
             spawnSmallEnemyWave();
         }
 
@@ -149,11 +148,12 @@ namespace Thunder_Fighter
             else if (e.KeyChar == (char)Keys.D) player.move(speed, 0);
             else if (e.KeyChar == (char)Keys.W) player.move(0, -speed);
             else if (e.KeyChar == (char)Keys.S) player.move(0, speed);
-            else if (e.KeyChar == 'k' || e.KeyChar == 'K')
-            {
-                if (enemies.Count > 0 && !enemies[0].isDead)
-                    enemies[0].TakeDamage(999);
-            }
+            //Test destruction của enemy
+            //else if (e.KeyChar == 'k' || e.KeyChar == 'K')
+            //{
+            //    if (enemies.Count > 0 && !enemies[0].isDead)
+            //        enemies[0].TakeDamage(999);
+            //}
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
