@@ -80,7 +80,7 @@ namespace Thunder_Fighter
         {
             double secondsElapsed = (DateTime.Now - startTime).TotalSeconds;
 
-            if (!stopEnemySpawning && secondsElapsed >= 15 && (secondsElapsed - lastBigEnemySpawnTime >= 10))
+            if (!stopEnemySpawning && secondsElapsed >= 20 && (secondsElapsed - lastBigEnemySpawnTime >= 20))
             {
                 spawnBigEnemy();
                 lastBigEnemySpawnTime = secondsElapsed;
