@@ -16,7 +16,7 @@ namespace Thunder_Fighter
         static int fps = 60;
         int width = 360 * 3 / 2;
         int height = 640 * 3 / 2;
-        int frameCount = 0;
+        public static int frameCount = 0;
         int speed = 10;
 
         Fighter player = new Fighter("Player", 100, 100);
@@ -54,6 +54,13 @@ namespace Thunder_Fighter
             gameTimer.Interval = 1000 / fps;
             gameTimer.Start();
 
+            loadPlayerStatus();
+
+            spawnSmallEnemyWave();
+        }
+
+        private void loadPlayerStatus()
+        {
             string gifP = Path.Combine(assetPath, "player/Ship_body.gif");
             string gifShield = Path.Combine(assetPath, "player/Shield.gif");
             Sprite playerSprite = new Sprite();
@@ -62,11 +69,13 @@ namespace Thunder_Fighter
             Sprite playerShield = new Sprite();
             playerShield.LoadGif(gifShield);
             player.shieldSprite = playerShield;
-            player.h = 120;
-            player.w = 120;
-            player.x = width / 2 - player.getW() / 2;
-            player.y = height - 50 - player.getH();
-            spawnSmallEnemyWave();
+            Fighter.h = 120;
+            Fighter.w = 120;
+            Fighter.x = width / 2 - player.getW() / 2;
+            Fighter.y = height - 50 - player.getH();
+            
+            Engine pEngine = new Engine(0);
+            player.engine = pEngine;
         }
 
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -122,15 +131,12 @@ namespace Thunder_Fighter
                 spawnSmallEnemyWave();
             }
 
-            player.update(ref g);
+            player.update();
         }
 
         private void paint()
         {
             g.DrawImage(background, new Rectangle(0, 0, plMain.Width, plMain.Height));
-
-            if (frameCount % 4 == 0)
-                player.shieldSprite.index++;
 
             foreach (var enemy in enemies)
                 enemy.Paint(ref g);
@@ -222,6 +228,12 @@ namespace Thunder_Fighter
             Rectangle ra = new Rectangle(a.getX(), a.getY(), a.getW(), a.getH());
             Rectangle rb = new Rectangle(b.getX(), b.getY(), b.getW(), b.getH());
             return ra.IntersectsWith(rb);
+        }
+
+        private void plMain_MouseMove(object sender, MouseEventArgs e)
+        {
+            Fighter.x = e.X - player.getW() / 2;
+            Fighter.y = e.Y - player.getH() / 2;
         }
     }
 }

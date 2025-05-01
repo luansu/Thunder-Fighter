@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,13 +11,13 @@ namespace Thunder_Fighter.BSLayers
     {
         public int type;
         public string name;
-        public int x;
-        public int y;
-        public int w;
-        public int h;
+        public static int x;
+        public static int y;
+        public static int w;
+        public static int h;
         public int health;
         public int stamina;
-        public Dart dart;
+        public bool isProtected = false;
         public Engine engine;
         public Sprite baseSprite;
         public Sprite shieldSprite;
@@ -28,20 +29,25 @@ namespace Thunder_Fighter.BSLayers
             this.stamina = stamina;
         }
 
-        public void update(ref Graphics g) 
-        { 
-
+        public void update() 
+        {
+            engine.update();
         }
 
         public void paint(ref Graphics g)
         {
-            baseSprite.Draw(ref g, this.x, this.y, this.w, this.h);
-            shieldSprite.Draw(ref g, this.x, this.y, this.w, this.h);
+            engine.paint(ref g);
+            baseSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
+            if (isProtected)
+            {
+                if (Form1.frameCount % 2 == 0) shieldSprite.index++;
+                shieldSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
+            }
         }
         public void move(int dx, int dy)
         {
-            this.x += dx;
-            this.y += dy;
+            Fighter.x += dx;
+            Fighter.y += dy;
         }
 
         public int getX()

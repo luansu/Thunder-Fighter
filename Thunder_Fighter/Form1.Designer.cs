@@ -39,6 +39,7 @@
             plMain.Name = "plMain";
             plMain.Size = new Size(360, 640);
             plMain.TabIndex = 0;
+            plMain.MouseMove += plMain_MouseMove;
             // 
             // gameTimer
             // 
