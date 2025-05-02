@@ -15,29 +15,60 @@ namespace Thunder_Fighter.BSLayers
         public static int y;
         public static int w;
         public static int h;
+        public int mHealth;
+        public int mStamina;
         public int health;
         public int stamina;
         public bool isProtected = false;
         public Engine engine;
         public Sprite baseSprite;
         public Sprite shieldSprite;
+        public int status = 0; // 0: 100%, 1: 75%, 2: 50%, 3: 25%, 4: 0%
 
         public Fighter(string name, int health, int stamina)
         {
             this.name = name;
-            this.health = health;
+            this.mHealth = health;
+            this.mStamina = stamina;
+            this.health = 99;
             this.stamina = stamina;
         }
 
         public void update() 
         {
             engine.update();
+
+            float percentH = (float) this.health / this.mHealth;
+            if(percentH > 0.75)
+            {
+                this.status = 0;
+            }
+            else if (percentH > 0.5)
+            {
+                this.status = 1;
+            }
+            else if (percentH > 0.25)
+            {
+                this.status = 2;
+            }
+            else if (percentH > 0)
+            {
+                this.status = 3;
+            }
+            else
+            {
+                this.status = 4;
+            }
         }
 
         public void paint(ref Graphics g)
         {
             engine.paint(ref g);
-            baseSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
+            if(this.status < 4)
+            {
+                baseSprite.index = status;
+                baseSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
+            }
             if (isProtected)
             {
                 if (Form1.frameCount % 2 == 0) shieldSprite.index++;
@@ -48,6 +79,16 @@ namespace Thunder_Fighter.BSLayers
         {
             Fighter.x += dx;
             Fighter.y += dy;
+        }
+
+        public void getHit()
+        {
+            this.health -= 100;
+        }
+
+        public bool isGetHit()
+        {
+            return false;
         }
 
         public int getX()

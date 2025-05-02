@@ -8,7 +8,7 @@ namespace Thunder_Fighter
 {
     class Resource
     {
-         public static string ASSETSPATH = Path.GetFullPath("../../../assets");
+        public static string ASSETSPATH = Path.GetFullPath("../../../assets");
         public static List<string> ENGINE_DART = new List<string>()
          {
              Path.Combine(ASSETSPATH, "player/Weapons/dart_0.gif"),
@@ -23,5 +23,8 @@ namespace Thunder_Fighter
              Path.Combine(ASSETSPATH, "player/Weapons/Rockets.gif"),
              Path.Combine(ASSETSPATH, "player/Weapons/Zapper.gif"),
          };
+        public static string SHIP_BODY = Path.Combine(ASSETSPATH, "player/Main Ship_full.gif");
+        public static string SHIELD = Path.Combine(ASSETSPATH, "player/Shield.gif");
+        public static string BG = Path.Combine(ASSETSPATH, "background/bg1 - Copy.png");
     }
 }

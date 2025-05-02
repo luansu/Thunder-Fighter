@@ -48,6 +48,7 @@ namespace Thunder_Fighter.BSLayers
             else if (this.type == 2)
             {
                 this.coolDown = 20;
+                this.speed = 25;
             }
             else if (this.type == 3)
             {
@@ -64,7 +65,7 @@ namespace Thunder_Fighter.BSLayers
 
         public void update()
         {
-            if (isFire)
+            if (this.isFire)
             {
                 this.y -= (int)this.speed;
             }
@@ -73,7 +74,16 @@ namespace Thunder_Fighter.BSLayers
         public void paint(ref Graphics g)
         {
             if (Form1.frameCount % 2 == 0) this.dartSprite.index++;
-            dartSprite.Draw(ref g, this.x, this.y, this.w, this.h);
+            if (this.isFire)
+            {
+                dartSprite.Draw(ref g, this.x, this.y, this.w, this.h);
+            }
+        }
+
+        public bool isCollide(IObject obj)
+        {
+            return !(this.x + this.w < obj.getX() || this.x > obj.getX() + obj.getW() ||
+             this.y + this.h < obj.getY() || this.y > obj.getY() + obj.getH());
         }
 
         public int getX()

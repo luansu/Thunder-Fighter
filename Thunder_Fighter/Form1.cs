@@ -11,8 +11,7 @@ namespace Thunder_Fighter
         Graphics g;
 
         public static string assetPath = Path.GetFullPath("../../../assets");
-        string bgPath = Path.Combine(assetPath, "background/bg1.png");
-        Image background;
+        GBackground bg = new GBackground();
         static int fps = 60;
         int width = 360 * 3 / 2;
         int height = 640 * 3 / 2;
@@ -45,7 +44,6 @@ namespace Thunder_Fighter
 
             this.screen = new Bitmap(this.plMain.Width, this.plMain.Height, this.plMain.CreateGraphics());
             this.g = Graphics.FromImage(this.screen);
-            background = Image.FromFile(bgPath);
             this.plMain.CreateGraphics().DrawImage(this.screen, 0, 0);
         }
 
@@ -61,8 +59,8 @@ namespace Thunder_Fighter
 
         private void loadPlayerStatus()
         {
-            string gifP = Path.Combine(assetPath, "player/Ship_body.gif");
-            string gifShield = Path.Combine(assetPath, "player/Shield.gif");
+            string gifP = Resource.SHIP_BODY;
+            string gifShield = Resource.SHIELD;
             Sprite playerSprite = new Sprite();
             playerSprite.LoadGif(gifP);
             player.baseSprite = playerSprite;
@@ -74,8 +72,9 @@ namespace Thunder_Fighter
             Fighter.x = width / 2 - player.getW() / 2;
             Fighter.y = height - 50 - player.getH();
             
-            Engine pEngine = new Engine(0);
+            Engine pEngine = new Engine(2);
             player.engine = pEngine;
+            System.Windows.Forms.Cursor.Position = new System.Drawing.Point(Fighter.x, Fighter.y);
         }
 
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -88,6 +87,7 @@ namespace Thunder_Fighter
         private void update()
         {
             double secondsElapsed = (DateTime.Now - startTime).TotalSeconds;
+            bg.update(this.plMain.Width, this.plMain.Height);
 
             if (!stopEnemySpawning && secondsElapsed >= 20 && (secondsElapsed - lastBigEnemySpawnTime >= 20))
             {
@@ -130,13 +130,12 @@ namespace Thunder_Fighter
             {
                 spawnSmallEnemyWave();
             }
-
             player.update();
         }
 
         private void paint()
         {
-            g.DrawImage(background, new Rectangle(0, 0, plMain.Width, plMain.Height));
+            bg.paint(ref g, this.plMain.Width, this.plMain.Height);
 
             foreach (var enemy in enemies)
                 enemy.Paint(ref g);

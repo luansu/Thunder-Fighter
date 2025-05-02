@@ -15,12 +15,15 @@ namespace Thunder_Fighter.BSLayers
         public int w;
         public int h;
         public Dart dartTemplate;
-        public List<Dart> fireDart = new List<Dart>();
+        public List<Dart> fireDarts = new List<Dart>();
         public EngineEff eff;
         public Sprite eSprite;
 
         public bool isFire = false;
         public bool isCooling = false;
+        public List<int> dart_3_fire_phase = new List<int>() {2, 4, 6, 8, 10, 12};
+        public List<int> dart_3_cooling_phase = new List<int>() { 3, 5, 7, 9, 11, 13 };
+
         public Engine(int type)
         {
             this.type = type;
@@ -56,7 +59,7 @@ namespace Thunder_Fighter.BSLayers
         {
             this.x = Fighter.x;
             this.y = Fighter.y;
-            foreach(Dart dart in fireDart)
+            foreach(Dart dart in fireDarts)
             {
                 dart.update();
             }
@@ -67,10 +70,10 @@ namespace Thunder_Fighter.BSLayers
                 {
                     Dart lDart = new Dart(dartTemplate.name, dartTemplate.speed, dartTemplate.damage, dartTemplate.type);
                     lDart.isFire = true;
-                    fireDart.Add(lDart);
+                    fireDarts.Add(lDart);
                     Dart rDart = new Dart(dartTemplate.name, dartTemplate.speed, dartTemplate.damage, dartTemplate.type);
                     rDart.isFire = true;
-                    fireDart.Add(rDart);
+                    fireDarts.Add(rDart);
                     lDart.x = Fighter.x - 1;
                     rDart.x = Fighter.x + this.w / 3 + 1;
 
@@ -80,12 +83,27 @@ namespace Thunder_Fighter.BSLayers
                 {
                     Dart newDart = new Dart(dartTemplate.name, dartTemplate.speed, dartTemplate.damage, dartTemplate.type);
                     newDart.isFire = true;
-                    fireDart.Add(newDart);
+                    fireDarts.Add(newDart);
                 }
                 // type 2 sẽ bắn từng viên nhưng vị trí sẽ khác nhau
                 else if (dartTemplate.type == 2)
                 {
-
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Dart newDart = new Dart(dartTemplate.name, dartTemplate.speed, dartTemplate.damage, dartTemplate.type);
+                        //newDart.x = Fighter.x - 12 + i*6;
+                        //newDart.y = this.y;
+                        newDart.isFire = false;
+                        fireDarts.Add(newDart);
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Dart newDart = new Dart(dartTemplate.name, dartTemplate.speed, dartTemplate.damage, dartTemplate.type);
+                        //newDart.x = Fighter.x + 40 + i * 6;
+                        //newDart.y = this.y;
+                        newDart.isFire = false;
+                        fireDarts.Add(newDart);
+                    }
                 }
                 // type 3 sẽ bắn ra đạn dài, chạn vào vật thể sẽ bị chặn lại
                 else if (dartTemplate.type == 3)
@@ -100,15 +118,46 @@ namespace Thunder_Fighter.BSLayers
         public void paint(ref Graphics g)
         {
             if (Form1.frameCount % 2 == 0) eSprite.index++;
+
             if (eSprite.index == 0)
             {
                 this.isCooling = false;
             }
-            if (eSprite.index == eSprite.bitmaps.Count - 1)
+
+            if(this.type == 2)
             {
-                this.isFire = true;
+                if (eSprite.index == 0)
+                {
+                    this.isFire = true;
+                }
             }
-            foreach (Dart dart in fireDart)
+            else
+            {
+                if (eSprite.index == eSprite.bitmaps.Count - 1)
+                {
+                    this.isFire = true;
+                }
+            }
+
+            if (this.type == 2 && this.fireDarts.Count >= 6)
+            {
+                int dartIndex = this.fireDarts.Count - 6;
+                List<int> arr = new List<int>() { 2, 3, 1, 4, 0, 5 };
+
+                for (int i = 0; i < 6; i++)
+                {
+                    if (this.dart_3_fire_phase[i] == eSprite.index)
+                    {
+                        int index = dartIndex + arr[i];
+                        int offsetX = (arr[i] >= 3) ? +22 + arr[i] * 6 : -10 + arr[i] * 6;
+                        fireDarts[index].x = Fighter.x + offsetX;
+                        fireDarts[index].y = this.y;
+                        fireDarts[index].isFire = true;
+                    }
+                }
+            }
+
+            foreach (Dart dart in fireDarts)
             {
                 dart.paint(ref g);
             }
