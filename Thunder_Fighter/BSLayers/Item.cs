@@ -18,6 +18,11 @@ namespace Thunder_Fighter.BSLayers
         public int stamina;
         public float damage;
 
+        public bool isCollide(IObject obj)
+        {
+            return !(this.x + this.w < obj.getX() || this.x > obj.getX() + obj.getW() ||
+             this.y + this.h < obj.getY() || this.y > obj.getY() + obj.getH());
+        }
         public int getX()
         {
             return x;

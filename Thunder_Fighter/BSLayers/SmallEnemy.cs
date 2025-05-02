@@ -22,6 +22,7 @@ namespace Thunder_Fighter.BSLayers
             return sprite;
         }
 
+
         public override void Die()
         {
             base.Die();

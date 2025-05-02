@@ -164,7 +164,11 @@ namespace Thunder_Fighter.BSLayers
             eSprite.Draw(ref g, this.x, this.y, this.w, this.h);
 
         }
-
+        public bool isCollide(IObject obj)
+        {
+            return !(this.x + this.w < obj.getX() || this.x > obj.getX() + obj.getW() ||
+             this.y + this.h < obj.getY() || this.y > obj.getY() + obj.getH());
+        }
         public int getX()
         {
             return x;
