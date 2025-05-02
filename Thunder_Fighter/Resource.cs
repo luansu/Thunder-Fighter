@@ -24,7 +24,10 @@ namespace Thunder_Fighter
              Path.Combine(ASSETSPATH, "player/Weapons/Zapper.gif"),
          };
         public static string SHIP_BODY = Path.Combine(ASSETSPATH, "player/Main Ship_full.gif");
-        public static string SHIELD = Path.Combine(ASSETSPATH, "player/Shield.gif");
+        public static string SHIELD = Path.Combine(ASSETSPATH, "player/Main Ship - Shields - Invincibility Shield.gif");
+        public static string SHIELD_F = Path.Combine(ASSETSPATH, "player/Shield");
         public static string BG = Path.Combine(ASSETSPATH, "background/bg1 - Copy.png");
+        public static string HEAHLTH = Path.Combine(ASSETSPATH, "player/Status/health.gif");
+        public static string STAMINA = Path.Combine(ASSETSPATH, "player/Status/stamina.gif");
     }
 }

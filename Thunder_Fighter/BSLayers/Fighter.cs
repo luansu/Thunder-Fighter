@@ -15,65 +15,68 @@ namespace Thunder_Fighter.BSLayers
         public static int y;
         public static int w;
         public static int h;
-        public int mHealth;
-        public int mStamina;
-        public int health;
-        public int stamina;
+        public static int mHealth;
+        public static int mStamina;
+        public static int health;
+        public static int stamina;
         public bool isProtected = false;
         public Engine engine;
         public Sprite baseSprite;
         public Sprite shieldSprite;
-        public int status = 0; // 0: 100%, 1: 75%, 2: 50%, 3: 25%, 4: 0%
+        public static int status = 0; // 0: 100%, 1: 75%, 2: 50%, 3: 25%, 4: 0%
+        public StatusBar statusBar = new StatusBar();
 
         public Fighter(string name, int health, int stamina)
         {
             this.name = name;
-            this.mHealth = health;
-            this.mStamina = stamina;
-            this.health = 99;
-            this.stamina = stamina;
+            Fighter.mHealth = health;
+            Fighter.mStamina = stamina;
+            Fighter.health = 99;
+            Fighter.stamina = stamina;
         }
 
         public void update() 
         {
             engine.update();
 
-            float percentH = (float) this.health / this.mHealth;
+            float percentH = (float) Fighter.health / Fighter.mHealth;
             if(percentH > 0.75)
             {
-                this.status = 0;
+                Fighter.status = 0;
             }
             else if (percentH > 0.5)
             {
-                this.status = 1;
+                Fighter.status = 1;
             }
             else if (percentH > 0.25)
             {
-                this.status = 2;
+                Fighter.status = 2;
             }
             else if (percentH > 0)
             {
-                this.status = 3;
+                Fighter.status = 3;
             }
             else
             {
-                this.status = 4;
+                Fighter.status = 4;
             }
+            statusBar.update();
         }
 
         public void paint(ref Graphics g)
         {
             engine.paint(ref g);
-            if(this.status < 4)
+            if(Fighter.status < 4)
             {
                 baseSprite.index = status;
                 baseSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
             }
-            if (isProtected)
+            if (!isProtected)
             {
                 if (Form1.frameCount % 2 == 0) shieldSprite.index++;
                 shieldSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
             }
+            statusBar.paint(ref g);
         }
         public void move(int dx, int dy)
         {
@@ -83,14 +86,18 @@ namespace Thunder_Fighter.BSLayers
 
         public void getHit()
         {
-            this.health -= 100;
+            Fighter.health -= 100;
         }
 
         public bool isGetHit()
         {
             return false;
         }
-
+        public bool isCollide(IObject obj)
+        {
+            return !(Fighter.x + Fighter.w < obj.getX() || Fighter.x > obj.getX() + obj.getW() ||
+             Fighter.y + Fighter.h < obj.getY() || Fighter.y > obj.getY() + obj.getH());
+        }
         public int getX()
         {
             return x;

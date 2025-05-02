@@ -110,7 +110,11 @@ namespace Thunder_Fighter.BSLayers
             foreach (var b in bullets)
                 b.Paint(ref g);
         }
-
+        public bool isCollide(IObject obj)
+        {
+            return !(this.x + this.w < obj.getX() || this.x > obj.getX() + obj.getW() ||
+             this.y + this.h < obj.getY() || this.y > obj.getY() + obj.getH());
+        }
         public int getX() => x;
         public int getY() => y;
         public int getW() => w;

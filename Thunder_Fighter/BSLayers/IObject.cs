@@ -8,6 +8,7 @@ namespace Thunder_Fighter.BSLayers
 {
     interface IObject
     {
+        bool isCollide(IObject obj);
         int getX();
         int getY();
         int getW();

@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Imaging;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Thunder_Fighter.BSLayers;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
@@ -18,7 +19,7 @@ namespace Thunder_Fighter
         public static int frameCount = 0;
         int speed = 10;
 
-        Fighter player = new Fighter("Player", 100, 100);
+        Fighter player = new Fighter("Player", 100, 0);
         List<Enemy> enemies = new List<Enemy>();
         List<Enemy> currentWave = new List<Enemy>();
         List<EnemyBullet> allEnemyBullets = new List<EnemyBullet>();
@@ -64,15 +65,14 @@ namespace Thunder_Fighter
             Sprite playerSprite = new Sprite();
             playerSprite.LoadGif(gifP);
             player.baseSprite = playerSprite;
-            Sprite playerShield = new Sprite();
-            playerShield.LoadGif(gifShield);
+            Sprite playerShield = new Sprite(Resource.SHIELD_F);
             player.shieldSprite = playerShield;
             Fighter.h = 120;
             Fighter.w = 120;
             Fighter.x = width / 2 - player.getW() / 2;
             Fighter.y = height - 50 - player.getH();
             
-            Engine pEngine = new Engine(2);
+            Engine pEngine = new Engine(1);
             player.engine = pEngine;
             System.Windows.Forms.Cursor.Position = new System.Drawing.Point(Fighter.x, Fighter.y);
         }
@@ -84,7 +84,7 @@ namespace Thunder_Fighter
             frameCount++;
         }
 
-        private void update()
+        private async Task update()
         {
             double secondsElapsed = (DateTime.Now - startTime).TotalSeconds;
             bg.update(this.plMain.Width, this.plMain.Height);
@@ -118,9 +118,9 @@ namespace Thunder_Fighter
             // Kiểm tra va chạm đạn với player
             foreach (var b in allEnemyBullets)
             {
-                if (IsColliding(b, player))
+                if (player.isCollide(b))
                 {
-                    player.health -= (int)b.damage;
+                    Fighter.health -= (int)b.damage;
                     b.y = 9999;
                 }
             }
@@ -131,6 +131,11 @@ namespace Thunder_Fighter
                 spawnSmallEnemyWave();
             }
             player.update();
+            if(Fighter.status == 4)
+            {
+                //Thread.Sleep(2000);
+            }
+            
         }
 
         private void paint()
