@@ -81,8 +81,8 @@ namespace Thunder_Fighter.BSLayers
 
         public void TakeDamage(float dmg)
         {
-            this.health -= (int)dmg;
-            if (this.health < 0) this.health = 0;
+            Fighter.health -= (int)dmg;
+            if (Fighter.health < 0) Fighter.health = 0;
         }
 
         public void move(int dx, int dy)

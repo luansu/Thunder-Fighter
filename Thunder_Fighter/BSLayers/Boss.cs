@@ -87,7 +87,7 @@ namespace Thunder_Fighter.BSLayers
             // Vẽ các viên đạn trước (nằm dưới Boss)
             foreach (var bullet in bullets)
             {
-                bullet.Paint(ref g);
+                bullet.paint(ref g);
             }
 
             // Vẽ Boss sau (nằm trên đạn)

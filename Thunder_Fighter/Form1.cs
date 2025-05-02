@@ -72,7 +72,7 @@ namespace Thunder_Fighter
             Fighter.x = width / 2 - player.getW() / 2;
             Fighter.y = height - 50 - player.getH();
             
-            Engine pEngine = new Engine(1);
+            Engine pEngine = new Engine(2);
             player.engine = pEngine;
             System.Windows.Forms.Cursor.Position = new System.Drawing.Point(Fighter.x, Fighter.y);
         }
@@ -146,7 +146,7 @@ namespace Thunder_Fighter
                 enemy.Paint(ref g);
 
             foreach (var b in allEnemyBullets)
-                b.Paint(ref g);
+                b.paint(ref g);
 
             player.paint(ref g);
             this.plMain.CreateGraphics().DrawImage(screen, 0, 0);

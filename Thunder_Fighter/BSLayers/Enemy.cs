@@ -108,7 +108,7 @@ namespace Thunder_Fighter.BSLayers
             }
 
             foreach (var b in bullets)
-                b.Paint(ref g);
+                b.paint(ref g);
         }
         public bool isCollide(IObject obj)
         {

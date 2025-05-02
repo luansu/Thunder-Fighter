@@ -18,6 +18,7 @@ namespace Thunder_Fighter.BSLayers
         public int coolDown = 60;
 
         public bool isFire = false;
+        public bool isEnemyDart = false;
 
         private int lifetime = 0;
         private int maxLifetime = 90;
@@ -30,6 +31,7 @@ namespace Thunder_Fighter.BSLayers
             this.speed = speed;
             this.damage = damage;
             this.type = type;
+            this.isEnemyDart = false;
             this.loadDart();
         }
 
@@ -39,7 +41,7 @@ namespace Thunder_Fighter.BSLayers
             this.type = enemyType;
             this.x = startX;
             this.y = startY;
-
+            this.isEnemyDart = true;
             LoadBulletSprite(enemyType);
             SetBulletStats(enemyType);
         }
@@ -66,7 +68,6 @@ namespace Thunder_Fighter.BSLayers
                 0 => Path.Combine(Form1.assetPath, "enemy1/attack/Kla'ed - Torpedo.gif"),
                 1 => Path.Combine(Form1.assetPath, "enemy1/attack/Kla'ed - Ray.gif"),
                 2 => Path.Combine(Form1.assetPath, "enemy1/attack/Kla'ed - Wave.gif"),
-                _ => null
             };
 
             dartSprite = new Sprite();
@@ -100,22 +101,24 @@ namespace Thunder_Fighter.BSLayers
 
         public void update()
         {
-            if (type == 1)
+            if(this.isEnemyDart)
             {
-                lifetime++;
-                if (lifetime > maxLifetime)
-                    y = 9999;
+                if (this.type == 1)
+                {
+                    lifetime++;
+                    if (lifetime > maxLifetime)
+                        y = 9999;
+                }
+                y += (int)speed; // Enemy đạn bay xuống
             }
             else
             {
-                y += (int)speed; // Enemy đạn bay xuống
-            }
-
-            if (isFire)
                 y -= (int)speed; // Dart (người chơi) bay lên
+            }
+                
         }
 
-        public void Paint(ref Graphics g)
+        public void paint(ref Graphics g)
         {
             if (Form1.frameCount % 2 == 0) dartSprite.index++;
             dartSprite.Draw(ref g, x, y, w, h);

@@ -111,7 +111,7 @@ namespace Thunder_Fighter.BSLayers
         public override void Paint(ref Graphics g)
         {
             if (beam != null)
-                beam.Paint(ref g); // beam vẽ trước enemy
+                beam.paint(ref g); // beam vẽ trước enemy
 
             base.Paint(ref g); // enemy vẽ sau
         }
