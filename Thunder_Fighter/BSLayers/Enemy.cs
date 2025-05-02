@@ -18,7 +18,7 @@ namespace Thunder_Fighter.BSLayers
         public int explosionFrame = 0;
         public Sprite explosionSprite;
 
-        public List<EnemyBullet> bullets = new List<EnemyBullet>();
+        public List<Dart> bullets = new List<Dart>();
         protected int fireCooldown = 0;
         protected int fireInterval = 60;
         protected int animationCounter = 0;
@@ -59,7 +59,7 @@ namespace Thunder_Fighter.BSLayers
                 int bulletX = x + (w - bulletW) / 2;
                 int bulletY = y + h / 2 - bulletH / 2;
 
-                bullets.Add(new EnemyBullet(bulletX, bulletY, GetEnemyType()));
+                bullets.Add(new Dart(bulletX, bulletY, GetEnemyType()));
                 fireCooldown = fireInterval;
             }
         }
@@ -84,7 +84,7 @@ namespace Thunder_Fighter.BSLayers
             FireBullet();
 
             foreach (var b in bullets)
-                b.Update();
+                b.update();
 
             bullets.RemoveAll(b => b.y > 1000);
         }

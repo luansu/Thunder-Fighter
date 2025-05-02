@@ -8,7 +8,7 @@ namespace Thunder_Fighter.BSLayers
         private bool isEntering = true;
         private int targetX;
 
-        private EnemyBullet beam;
+        private Dart beam;
         private int beamTimer = 0;
         private bool isBeamOn = false;
 
@@ -88,7 +88,7 @@ namespace Thunder_Fighter.BSLayers
                         int beamX = x + (w - beamW) / 2;
                         int beamY = y + h - 40;
 
-                        beam = new EnemyBullet(beamX, beamY, 1);
+                        beam = new Dart(beamX, beamY, 1);
                         beam.w = beamW;
                         beam.h = beamH;
                         beam.speed = 0;

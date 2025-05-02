@@ -159,7 +159,7 @@ namespace Thunder_Fighter.BSLayers
 
             foreach (Dart dart in fireDarts)
             {
-                dart.paint(ref g);
+                dart.Paint(ref g);
             }
             eSprite.Draw(ref g, this.x, this.y, this.w, this.h);
 

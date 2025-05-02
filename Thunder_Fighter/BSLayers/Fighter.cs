@@ -75,6 +75,13 @@ namespace Thunder_Fighter.BSLayers
                 shieldSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
             }
         }
+
+        public void TakeDamage(float dmg)
+        {
+            this.health -= (int)dmg;
+            if (this.health < 0) this.health = 0;
+        }
+
         public void move(int dx, int dy)
         {
             Fighter.x += dx;

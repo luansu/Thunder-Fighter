@@ -62,15 +62,15 @@ namespace Thunder_Fighter.BSLayers
                 int centerX = x + w / 2;
                 int bulletY = y + h - 130;
 
-                var bullet1 = new EnemyBullet(centerX - bulletW - 10, bulletY, 2);
+                var bullet1 = new Dart(centerX - bulletW - 10, bulletY, 2);
                 bullet1.w = bulletW;
                 bullet1.h = bulletH;
 
-                var bullet2 = new EnemyBullet(centerX - bulletW / 2, bulletY, 2);
+                var bullet2 = new Dart(centerX - bulletW / 2, bulletY, 2);
                 bullet2.w = bulletW;
                 bullet2.h = bulletH;
 
-                var bullet3 = new EnemyBullet(centerX + bulletW + 10 - bulletW, bulletY, 2);
+                var bullet3 = new Dart(centerX + bulletW + 10 - bulletW, bulletY, 2);
                 bullet3.w = bulletW;
                 bullet3.h = bulletH;
 

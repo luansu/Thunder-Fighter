@@ -21,7 +21,7 @@ namespace Thunder_Fighter
         Fighter player = new Fighter("Player", 100, 100);
         List<Enemy> enemies = new List<Enemy>();
         List<Enemy> currentWave = new List<Enemy>();
-        List<EnemyBullet> allEnemyBullets = new List<EnemyBullet>();
+        List<Dart> allEnemyBullets = new List<Dart>();
         Random rand = new Random();
         DateTime startTime = DateTime.Now;
         double lastBigEnemySpawnTime = -10;
