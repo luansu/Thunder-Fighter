@@ -9,6 +9,7 @@ namespace Thunder_Fighter
     class Resource
     {
         public static string ASSETSPATH = Path.GetFullPath("../../../assets");
+        public static string FONT = Path.GetFullPath("../../../assets/font/Pixel.ttf");
         public static List<string> ENGINE_DART = new List<string>()
          {
              Path.Combine(ASSETSPATH, "player/Weapons/dart_0.gif"),

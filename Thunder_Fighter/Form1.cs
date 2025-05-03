@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Thunder_Fighter.BSLayers;
@@ -33,6 +34,11 @@ namespace Thunder_Fighter
         bool stopEnemySpawning = false;
         int bossSpawnCountdown = 0;
 
+        bool isPause = false;
+        bool isGameOver = false;
+
+        public static FontFamily fontFamily;
+
         public Form1()
         {
             InitializeComponent();
@@ -56,6 +62,10 @@ namespace Thunder_Fighter
             loadPlayerStatus();
 
             spawnSmallEnemyWave();
+
+            PrivateFontCollection pfc = new PrivateFontCollection();
+            pfc.AddFontFile(Resource.FONT);
+            fontFamily = pfc.Families[0];
         }
 
         private void loadPlayerStatus()
@@ -79,9 +89,16 @@ namespace Thunder_Fighter
 
         private void gameTimer_Tick(object sender, EventArgs e)
         {
-            this.update();
-            this.paint();
-            frameCount++;
+            if (!this.isGameOver)
+            {
+                this.update();
+                this.paint();
+                frameCount++;
+            }
+            else
+            {
+                this.paintOV();
+            }
         }
 
         private async Task update()
@@ -133,8 +150,9 @@ namespace Thunder_Fighter
             if(Fighter.status == 4)
             {
                 //Thread.Sleep(2000);
+                this.isGameOver = true;
             }
-            
+
         }
 
         private void paint()
@@ -148,6 +166,12 @@ namespace Thunder_Fighter
                 b.paint(ref g);
 
             player.paint(ref g);
+            this.plMain.CreateGraphics().DrawImage(screen, 0, 0);
+        }
+
+        public void paintOV()
+        {
+            GameText.show(ref g, "Game Over", 40, this.plMain.Height / 2 - 50, 40);
             this.plMain.CreateGraphics().DrawImage(screen, 0, 0);
         }
 
