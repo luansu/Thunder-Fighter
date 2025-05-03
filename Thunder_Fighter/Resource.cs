@@ -29,5 +29,12 @@ namespace Thunder_Fighter
         public static string BG = Path.Combine(ASSETSPATH, "background/bg1 - Copy.png");
         public static string HEAHLTH = Path.Combine(ASSETSPATH, "player/Status/health.gif");
         public static string STAMINA = Path.Combine(ASSETSPATH, "player/Status/stamina.gif");
+
+        public static string FIGHTER_DIE_EFF = Path.Combine(ASSETSPATH, "eff/fighter_die.gif");
+        public static string ENEMY_DIE_EFF = Path.Combine(ASSETSPATH, "eff/fighter_die.gif");
+        public static string SMALL_ENEMY_DIE_EFF = Path.Combine(ASSETSPATH, "eff/fighter_die.gif");
+        public static string FIGHTER_GET_HIT_EFF = Path.Combine(ASSETSPATH, "eff/fighter_die.gif");
+        public static string SMALL_ENEMY_GET_HIT_EFF = Path.Combine(ASSETSPATH, "eff/fighter_die.gif");
+        public static string BOSS_GET_HIT_EFF = Path.Combine(ASSETSPATH, "eff/fighter_die.gif");
     }
 }

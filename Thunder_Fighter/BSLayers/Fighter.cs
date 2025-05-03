@@ -20,12 +20,14 @@ namespace Thunder_Fighter.BSLayers
         public static int health;
         public static int stamina;
         public bool isProtected = false;
+        public bool isGetHit = false;
         public Engine engine;
         public Sprite baseSprite;
         public Sprite shieldSprite;
         public static int status = 0; // 0: 100%, 1: 75%, 2: 50%, 3: 25%, 4: 0%
         public StatusBar statusBar = new StatusBar();
-
+        ExplosionEff dieEff;
+        List<ExplosionEff> getHitEffs;
         public Fighter(string name, int health, int stamina)
         {
             this.name = name;
@@ -33,6 +35,12 @@ namespace Thunder_Fighter.BSLayers
             Fighter.mStamina = stamina;
             Fighter.health = 99;
             Fighter.stamina = stamina;
+        }
+
+        public void loadEff()
+        {
+            this.dieEff = new ExplosionEff(0);
+            this.getHitEffs = new List<ExplosionEff>();
         }
 
         public void update() 
@@ -59,46 +67,95 @@ namespace Thunder_Fighter.BSLayers
             else
             {
                 Fighter.status = 4;
+                if(this.dieEff is not null)
+                {
+                    this.dieEff.isStart = true;
+                    this.dieEff.update();
+                }
+            }
+
+            if (this.isGetHit)
+            {
+                this.getHitEffs.Add(new ExplosionEff(3));
+                this.isGetHit = false;
             }
             statusBar.update();
         }
 
         public void paint(ref Graphics g)
         {
-            engine.paint(ref g);
+            if(Fighter.status != 4)
+            {
+                engine.paint(ref g);
+            }
             if(Fighter.status < 4)
             {
                 baseSprite.index = status;
                 baseSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
             }
-            if (!isProtected)
+            else if (Fighter.status == 4 && this.dieEff is not null)
+            {
+               this.dieEff.paint(ref g);
+            }
+            if (!isProtected && Fighter.status != 4)
             {
                 if (Form1.frameCount % 2 == 0) shieldSprite.index++;
                 shieldSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
             }
+            if (this.getHitEffs.Count > 0)
+            {
+                //foreach (ExplosionEff eff in this.getHitEffs)
+                //{
+                //    if (Form1.frameCount % 2 == 0) eff.eff.index++;
+                //    bool isEnd = eff.eff.index == eff.eff.bitmaps.Count - 1;
+                //    eff.paint(ref g); 
+                //    if (isEnd)
+                //    {
+                //        this.getHitEffs.Remove(eff);
+                //    }
+                //}
+                for (int i = this.getHitEffs.Count - 1; i >= 0; i--)
+                {
+                    ExplosionEff eff = this.getHitEffs[i];
+                    if (Form1.frameCount % 2 == 0) eff.eff.index++;
+                    bool isEnd = eff.eff.index == eff.eff.bitmaps.Count - 1;
+                    eff.paint(ref g);
+                    if (isEnd)
+                    {
+                        this.getHitEffs.RemoveAt(i);
+                    }
+                }
+            }
             statusBar.paint(ref g);
-        }
-
-        public void TakeDamage(float dmg)
-        {
-            Fighter.health -= (int)dmg;
-            if (Fighter.health < 0) Fighter.health = 0;
         }
 
         public void move(int dx, int dy)
         {
-            Fighter.x += dx;
-            Fighter.y += dy;
+            if(Fighter.status!= 4)
+            {
+                Fighter.x += dx;
+                Fighter.y += dy;
+            }
         }
 
-        public void getHit()
+        public void moveTo(int x, int y)
         {
-            Fighter.health -= 100;
+            if (Fighter.status != 4)
+            {
+                Fighter.x = x;
+                Fighter.y = y;
+            }
         }
 
-        public bool isGetHit()
+        public void getHit(Dart b)
         {
-            return false;
+            if(!isProtected && Fighter.status != 4)
+            {
+                Fighter.health -= (int)b.damage;
+                b.y = 9999;
+                this.isGetHit = true;
+            }
+
         }
         public bool isCollide(IObject obj)
         {

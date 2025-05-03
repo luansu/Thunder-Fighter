@@ -71,7 +71,7 @@ namespace Thunder_Fighter
             Fighter.w = 120;
             Fighter.x = width / 2 - player.getW() / 2;
             Fighter.y = height - 50 - player.getH();
-            
+            player.loadEff();
             Engine pEngine = new Engine(2);
             player.engine = pEngine;
             System.Windows.Forms.Cursor.Position = new System.Drawing.Point(Fighter.x, Fighter.y);
@@ -120,8 +120,7 @@ namespace Thunder_Fighter
             {
                 if (player.isCollide(b))
                 {
-                    Fighter.health -= (int)b.damage;
-                    b.y = 9999;
+                    player.getHit(b);
                 }
             }
             allEnemyBullets.RemoveAll(b => b.y > 1000);
@@ -236,8 +235,7 @@ namespace Thunder_Fighter
 
         private void plMain_MouseMove(object sender, MouseEventArgs e)
         {
-            Fighter.x = e.X - player.getW() / 2;
-            Fighter.y = e.Y - player.getH() / 2;
+            player.moveTo(e.X - player.getW() / 2, e.Y - player.getH() / 2);
         }
     }
 }
