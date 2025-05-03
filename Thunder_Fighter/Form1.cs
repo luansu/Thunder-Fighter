@@ -15,8 +15,8 @@ namespace Thunder_Fighter
         public static string assetPath = Path.GetFullPath("../../../assets");
         GBackground bg = new GBackground();
         static int fps = 60;
-        int width = 360 * 3 / 2;
-        int height = 640 * 3 / 2;
+        public static int width = 360 * 3 / 2;
+        public static int height = 640 * 3 / 2;
         public static int frameCount = 0;
         int speed = 10;
 
@@ -24,6 +24,7 @@ namespace Thunder_Fighter
         List<Enemy> enemies = new List<Enemy>();
         List<Enemy> currentWave = new List<Enemy>();
         List<Dart> allEnemyBullets = new List<Dart>();
+        List<Item> items = new List<Item>();
         Random rand = new Random();
         DateTime startTime = DateTime.Now;
         double lastBigEnemySpawnTime = -10;
@@ -66,6 +67,8 @@ namespace Thunder_Fighter
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile(Resource.FONT);
             fontFamily = pfc.Families[0];
+            items.Add(new Item("Shield", 4, 0, 0));
+            items.Add(new Item("Weapon", 0, 100, 0));
         }
 
         private void loadPlayerStatus()
@@ -122,17 +125,37 @@ namespace Thunder_Fighter
                 }
             }
 
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                Item item = items[i];
+                item.update();
+                if (item.isCollide(player))
+                {
+                    if (item.type < 4)
+                    {
+                        player.changeWeapon(item.type);
+                    }
+                    else if (item.type == 4)
+                    {
+                        player.getShield();
+                    }
+                    item.lifetime = 0;
+                }
+                if (item.lifetime <= 0)
+                {
+                    items.Remove(item);
+                }
+            }
+
             foreach (var enemy in enemies)
                 enemy.Update();
 
             enemies.RemoveAll(e => e.isDead && !e.isExploding);
 
-            // Gom tất cả đạn enemy
             allEnemyBullets.Clear();
             foreach (var enemy in enemies)
                 allEnemyBullets.AddRange(enemy.bullets);
 
-            // Kiểm tra va chạm đạn với player
             foreach (var b in allEnemyBullets)
             {
                 if (player.isCollide(b))
@@ -146,8 +169,10 @@ namespace Thunder_Fighter
             {
                 spawnSmallEnemyWave();
             }
+
             player.update();
-            if(Fighter.status == 4)
+
+            if (Fighter.status == 4)
             {
                 //Thread.Sleep(2000);
                 this.isGameOver = true;
@@ -166,6 +191,10 @@ namespace Thunder_Fighter
                 b.paint(ref g);
 
             player.paint(ref g);
+            foreach (Item item in items)
+            {
+                item.paint(ref g);
+            }
             this.plMain.CreateGraphics().DrawImage(screen, 0, 0);
         }
 

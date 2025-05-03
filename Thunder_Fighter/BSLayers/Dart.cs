@@ -48,7 +48,7 @@ namespace Thunder_Fighter.BSLayers
 
         private void loadDart()
         {
-            if (this.type == 0) { this.coolDown = 60; this.speed = 20; }
+            if (this.type == 0) { this.coolDown = 60; this.speed = 40; }
             else if (this.type == 1) { this.coolDown = 120; this.speed = 10; }
             else if (this.type == 2) { this.coolDown = 20; this.speed = 25; }
             else if (this.type == 3) { this.coolDown = 0; }

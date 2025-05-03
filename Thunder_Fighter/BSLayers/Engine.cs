@@ -30,7 +30,7 @@ namespace Thunder_Fighter.BSLayers
             this.loadEngine(type);
         }
         
-        private void loadEngine(int type)
+        public void loadEngine(int type)
         {
             if (type == 0)
             {

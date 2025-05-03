@@ -20,6 +20,7 @@ namespace Thunder_Fighter.BSLayers
         public static int health;
         public static int stamina;
         public bool isProtected = false;
+        public int protectTime = 0;
         public bool isGetHit = false;
         public Engine engine;
         public Sprite baseSprite;
@@ -46,6 +47,12 @@ namespace Thunder_Fighter.BSLayers
         public void update() 
         {
             engine.update();
+            this.protectTime -= 1;
+            if(this.protectTime <= 0)
+            {
+                this.isProtected = false;
+                this.protectTime = 0;
+            }
 
             float percentH = (float) Fighter.health / Fighter.mHealth;
             if(percentH > 0.75)
@@ -79,6 +86,7 @@ namespace Thunder_Fighter.BSLayers
                 this.getHitEffs.Add(new ExplosionEff(3));
                 this.isGetHit = false;
             }
+            
             statusBar.update();
         }
 
@@ -97,7 +105,7 @@ namespace Thunder_Fighter.BSLayers
             {
                this.dieEff.paint(ref g);
             }
-            if (!isProtected && Fighter.status != 4)
+            if (this.isProtected && Fighter.status != 4)
             {
                 if (Form1.frameCount % 2 == 0) shieldSprite.index++;
                 shieldSprite.Draw(ref g, Fighter.x, Fighter.y, Fighter.w, Fighter.h);
@@ -114,6 +122,7 @@ namespace Thunder_Fighter.BSLayers
                 //        this.getHitEffs.Remove(eff);
                 //    }
                 //}
+
                 for (int i = this.getHitEffs.Count - 1; i >= 0; i--)
                 {
                     ExplosionEff eff = this.getHitEffs[i];
@@ -138,6 +147,23 @@ namespace Thunder_Fighter.BSLayers
             }
         }
 
+        public void getShield(int time = 9000)
+        {
+            if (Fighter.status != 4)
+            {
+                this.isProtected = true;
+                this.protectTime = time;
+            }
+        }
+
+        public void changeWeapon(int type)
+        {
+            if (Fighter.status != 4)
+            {
+                this.engine = new Engine(type);
+            }
+        }
+
         public void moveTo(int x, int y)
         {
             if (Fighter.status != 4)
@@ -149,9 +175,12 @@ namespace Thunder_Fighter.BSLayers
 
         public void getHit(Dart b)
         {
-            if(!isProtected && Fighter.status != 4)
+            if(Fighter.status != 4)
             {
-                Fighter.health -= (int)b.damage;
+                if (!this.isProtected)
+                {
+                    Fighter.health -= (int)b.damage;
+                }
                 b.y = 9999;
                 this.isGetHit = true;
             }

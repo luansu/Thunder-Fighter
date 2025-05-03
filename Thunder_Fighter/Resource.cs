@@ -24,6 +24,20 @@ namespace Thunder_Fighter
              Path.Combine(ASSETSPATH, "player/Weapons/Rockets.gif"),
              Path.Combine(ASSETSPATH, "player/Weapons/Zapper.gif"),
          };
+
+        public static List<string> WEAPON_ITEMS = new List<string>()
+         {
+             Path.Combine(ASSETSPATH, "items/weapon_items/Pickup Icon - Weapons - Auto Cannons.gif"),
+             Path.Combine(ASSETSPATH, "items/weapon_items/Pickup Icon - Weapons - Big Space Gun 2000.gif"),
+             Path.Combine(ASSETSPATH, "items/weapon_items/Pickup Icon - Weapons - Rocket.gif"),
+             Path.Combine(ASSETSPATH, "items/weapon_items/Pickup Icon - Weapons - Zapper.gif"),
+         };
+
+        public static List<string> ATTRIBUTE_ITEMS = new List<string>()
+         {
+             Path.Combine(ASSETSPATH, "items/Pickup Icon - Shield Generator - All around shield.gif"),
+         };
+
         public static string SHIP_BODY = Path.Combine(ASSETSPATH, "player/Main Ship_full.gif");
         public static string SHIELD = Path.Combine(ASSETSPATH, "player/Main Ship - Shields - Invincibility Shield.gif");
         public static string SHIELD_F = Path.Combine(ASSETSPATH, "player/Shield");
