@@ -165,6 +165,21 @@ namespace Thunder_Fighter
             }
             allEnemyBullets.RemoveAll(b => b.y > 1000);
 
+            // Kiểm tra va chạm giữa đạn của người chơi và các enemy
+            foreach (var enemy in enemies)
+            {
+                foreach (var bullet in player.engine.fireDarts)
+                {
+                    if (bullet.isCollide(enemy))
+                    {
+                        // Giảm máu của enemy và hủy đạn
+                        enemy.TakeDamage(bullet.damage);
+                        player.engine.fireDarts.Remove(bullet);
+
+                    }
+                }
+            }
+
             if (!stopEnemySpawning && currentWave.Count > 0 && currentWave.All(e => e.isDead))
             {
                 spawnSmallEnemyWave();
