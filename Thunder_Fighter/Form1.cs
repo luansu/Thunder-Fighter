@@ -28,12 +28,21 @@ namespace Thunder_Fighter
         Random rand = new Random();
         DateTime startTime = DateTime.Now;
         double lastBigEnemySpawnTime = -10;
+        bool showWaveText = false;
+        DateTime waveTextStartTime;
+        string waveTextContent = "";
+        int waveTextDuration = 2000; // 2 giây
+        bool wave1Shown = false;
+        int wave = 0;
+
 
         int bigEnemyCount = 0;
-        bool hasTriggeredMassDestruction = false;
+        int smallEnemyWaveCount = 0;
         bool hasSpawnedBoss = false;
-        bool stopEnemySpawning = false;
+        bool stopSmallEnemySpawning = false;
+        bool stopBigEnemySpawning = false;
         int bossSpawnCountdown = 0;
+        int count = 0;
 
         bool isPause = false;
         bool isGameOver = false;
@@ -57,12 +66,11 @@ namespace Thunder_Fighter
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            wave++;
             gameTimer.Interval = 1000 / fps;
             gameTimer.Start();
 
             loadPlayerStatus();
-
-            spawnSmallEnemyWave();
 
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile(Resource.FONT);
@@ -108,20 +116,39 @@ namespace Thunder_Fighter
         {
             double secondsElapsed = (DateTime.Now - startTime).TotalSeconds;
             bg.update(this.plMain.Width, this.plMain.Height);
-
-            if (!stopEnemySpawning && secondsElapsed >= 20 && (secondsElapsed - lastBigEnemySpawnTime >= 20))
+            //wave1
+            if (wave == 1)
             {
-                spawnBigEnemy();
-                lastBigEnemySpawnTime = secondsElapsed;
-            }
-
-            if (bossSpawnCountdown > 0)
-            {
-                bossSpawnCountdown--;
-                if (bossSpawnCountdown == 0 && !hasSpawnedBoss)
+                if (secondsElapsed > 1 && !wave1Shown)
                 {
-                    spawnBossEnemy();
-                    hasSpawnedBoss = true;
+                    ShowWave(wave);
+                    wave1Shown = true;
+                }
+                if (secondsElapsed > 3 && enemies.Count == 0)
+                {
+                    spawnSmallEnemyWave();
+                }
+
+                if (stopSmallEnemySpawning && enemies.Count == 0)
+                {
+                    wave++;
+                    wave1Shown = false;
+                    if (secondsElapsed > 1 && !wave1Shown)
+                    {
+                        ShowWave(wave);
+                        wave1Shown = true;
+                    }
+                    stopSmallEnemySpawning = false;
+                    stopBigEnemySpawning = false;
+                }
+            }
+            
+            if (wave == 2)
+            {
+               if(enemies.Count == 0)
+                {
+                    spawnBigEnemy();
+                    spawnSmallEnemyWave();
                 }
             }
 
@@ -180,10 +207,7 @@ namespace Thunder_Fighter
                 }
             }
 
-            if (!stopEnemySpawning && currentWave.Count > 0 && currentWave.All(e => e.isDead))
-            {
-                spawnSmallEnemyWave();
-            }
+           
 
             player.update();
 
@@ -210,6 +234,32 @@ namespace Thunder_Fighter
             {
                 item.paint(ref g);
             }
+
+            if (showWaveText)
+            {
+                TimeSpan elapsed = DateTime.Now - waveTextStartTime;
+                if (elapsed.TotalMilliseconds <= waveTextDuration)
+                {
+                    using (Font font = new Font(Form1.fontFamily, 36, FontStyle.Bold))
+                    using (Brush brush = new SolidBrush(Color.White))
+                    using (StringFormat format = new StringFormat()
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    })
+                    {
+                        RectangleF rect = new RectangleF(0, 0, plMain.Width, plMain.Height);
+                        g.DrawString(waveTextContent, font, brush, rect, format);
+                    }
+                }
+                else
+                {
+                    showWaveText = false;
+                }
+            }
+
+
+
             this.plMain.CreateGraphics().DrawImage(screen, 0, 0);
         }
 
@@ -239,6 +289,7 @@ namespace Thunder_Fighter
 
         private void spawnSmallEnemyWave()
         {
+            if (stopSmallEnemySpawning) return;
             currentWave.Clear();
 
             int count = rand.Next(3, 5);
@@ -255,36 +306,70 @@ namespace Thunder_Fighter
                 enemies.Add(enemy);
                 currentWave.Add(enemy);
             }
+            
+            if (wave == 1)
+            {
+                if(smallEnemyWaveCount <3)
+                {
+                    smallEnemyWaveCount++;
+                }
+                else
+                {
+                    stopSmallEnemySpawning = true;
+                    smallEnemyWaveCount = 0;
+                }
+            }
+
+            if (wave == 2)
+            {
+                if(smallEnemyWaveCount <3)
+                {
+                    smallEnemyWaveCount++;
+                }
+                else
+                {
+                    if (bigEnemyCount ==1)
+                    stopSmallEnemySpawning = true;
+                }
+            }
+
         }
 
         private void spawnBigEnemy()
         {
-            if (stopEnemySpawning) return;
+            if (stopBigEnemySpawning) return;
 
             int side = rand.Next(0, 2);
             int y = rand.Next(30, 80);
             Enemy big = new BigEnemy(side, y);
             enemies.Add(big);
 
-            bigEnemyCount++;
-            if (bigEnemyCount == 4 && !hasTriggeredMassDestruction)
+            if (wave == 1)
             {
-                triggerMassDestruction();
-            }
-        }
-
-        private void triggerMassDestruction()
-        {
-            foreach (var enemy in enemies)
-            {
-                if (!enemy.isDead)
-                    enemy.TakeDamage(999);
+                stopBigEnemySpawning = true;
             }
 
-            hasTriggeredMassDestruction = true;
-            stopEnemySpawning = true;
-            bossSpawnCountdown = fps * 2;
+            if (wave == 2)
+            {
+ 
+                if(bigEnemyCount == 0)
+                {
+                    bigEnemyCount++;
+                }
+                else
+                {
+                    stopBigEnemySpawning = true;
+                    if(smallEnemyWaveCount > 3)
+                    {
+                        bigEnemyCount = 0;
+                    }
+                    
+                }
+            }
+            
         }
+
+  
 
         private void spawnBossEnemy()
         {
@@ -294,12 +379,21 @@ namespace Thunder_Fighter
             enemies.Add(boss);
         }
 
+
         private bool IsColliding(IObject a, IObject b)
         {
             Rectangle ra = new Rectangle(a.getX(), a.getY(), a.getW(), a.getH());
             Rectangle rb = new Rectangle(b.getX(), b.getY(), b.getW(), b.getH());
             return ra.IntersectsWith(rb);
         }
+
+        public void ShowWave(int number)
+        {
+            waveTextContent = $"WAVE {number}/4";
+            waveTextStartTime = DateTime.Now;
+            showWaveText = true;
+        }
+
 
         private void plMain_MouseMove(object sender, MouseEventArgs e)
         {
