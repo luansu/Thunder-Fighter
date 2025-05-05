@@ -27,6 +27,7 @@ namespace Thunder_Fighter
         List<Item> items = new List<Item>();
         Random rand = new Random();
         DateTime startTime = DateTime.Now;
+        DateTime CompleteWave = DateTime.Now;
         double lastBigEnemySpawnTime = -10;
         bool showWaveText = false;
         DateTime waveTextStartTime;
@@ -41,11 +42,13 @@ namespace Thunder_Fighter
         bool hasSpawnedBoss = false;
         bool stopSmallEnemySpawning = false;
         bool stopBigEnemySpawning = false;
+        bool stopBossEnemySpawning = false;
         int bossSpawnCountdown = 0;
         int count = 0;
 
         bool isPause = false;
         bool isGameOver = false;
+        bool isGameWin = false;
 
         public static FontFamily fontFamily;
 
@@ -100,7 +103,7 @@ namespace Thunder_Fighter
 
         private void gameTimer_Tick(object sender, EventArgs e)
         {
-            if (!this.isGameOver)
+            if (!this.isGameOver && !this.isGameWin)
             {
                 this.update();
                 this.paint();
@@ -108,7 +111,14 @@ namespace Thunder_Fighter
             }
             else
             {
-                this.paintOV();
+                if (this.isGameOver)
+                {
+                    this.paintOV();
+                }
+                else
+                {
+                    this.paintWG();
+                }
             }
         }
 
@@ -132,6 +142,28 @@ namespace Thunder_Fighter
                 if (stopSmallEnemySpawning && enemies.Count == 0)
                 {
                     wave++;
+                    CompleteWave=DateTime.Now;
+                    wave1Shown = false;
+                    if (secondsElapsed > 1 && !wave1Shown)
+                    {
+                        ShowWave(wave);
+                        wave1Shown = true;
+                    }
+                    stopSmallEnemySpawning = false;
+                }
+            }
+            //wave 2
+            if (wave == 2)
+            {
+               if(enemies.Count == 0 && (DateTime.Now-CompleteWave).TotalSeconds > 2)
+                {
+                    spawnBigEnemy();
+                    spawnSmallEnemyWave();
+                }
+                if (stopSmallEnemySpawning && enemies.Count == 0 && stopBigEnemySpawning)
+                {
+                    wave++;
+                    CompleteWave = DateTime.Now;
                     wave1Shown = false;
                     if (secondsElapsed > 1 && !wave1Shown)
                     {
@@ -142,14 +174,43 @@ namespace Thunder_Fighter
                     stopBigEnemySpawning = false;
                 }
             }
-            
-            if (wave == 2)
+
+            //wave 3
+            if (wave == 3)
             {
-               if(enemies.Count == 0)
+                if (enemies.Count == 0 && (DateTime.Now - CompleteWave).TotalSeconds > 2)
                 {
                     spawnBigEnemy();
                     spawnSmallEnemyWave();
                 }
+                if (stopSmallEnemySpawning && enemies.Count == 0 && stopBigEnemySpawning)
+                {
+                    wave++;
+                    CompleteWave = DateTime.Now;
+                    wave1Shown = false;
+                    if (secondsElapsed > 1 && !wave1Shown)
+                    {
+                        ShowWave(wave);
+                        wave1Shown = true;
+                    }
+                    stopSmallEnemySpawning = false;
+                    stopBigEnemySpawning = false;
+                }
+            }
+
+            //boss
+            if (wave == 4)
+            {
+                if (enemies.Count == 0 && (DateTime.Now - CompleteWave).TotalSeconds > 2)
+                {
+                    spawnBossEnemy();
+                    stopBossEnemySpawning = true;
+                }
+                if (enemies.Count == 0 && stopBossEnemySpawning)
+                {
+                    isGameWin = true;
+                }
+
             }
 
             for (int i = items.Count - 1; i >= 0; i--)
@@ -269,6 +330,12 @@ namespace Thunder_Fighter
             this.plMain.CreateGraphics().DrawImage(screen, 0, 0);
         }
 
+        public void paintWG()
+        {
+            GameText.show(ref g, "You Win", 40, this.plMain.Height / 2 - 50, 40);
+            this.plMain.CreateGraphics().DrawImage(screen, 0, 0);
+        }
+
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.A) player.move(-speed, 0);
@@ -322,14 +389,27 @@ namespace Thunder_Fighter
 
             if (wave == 2)
             {
-                if(smallEnemyWaveCount <3)
+                if(smallEnemyWaveCount <5)
                 {
                     smallEnemyWaveCount++;
                 }
                 else
                 {
-                    if (bigEnemyCount ==1)
                     stopSmallEnemySpawning = true;
+                    smallEnemyWaveCount = 0;
+                }
+            }
+
+            if (wave == 3)
+            {
+                if (smallEnemyWaveCount < 5)
+                {
+                    smallEnemyWaveCount++;
+                }
+                else
+                {
+                    stopSmallEnemySpawning = true;
+                    smallEnemyWaveCount = 0;
                 }
             }
 
@@ -352,18 +432,29 @@ namespace Thunder_Fighter
             if (wave == 2)
             {
  
-                if(bigEnemyCount == 0)
+                if(bigEnemyCount < 1)
                 {
+                    
                     bigEnemyCount++;
                 }
                 else
                 {
                     stopBigEnemySpawning = true;
-                    if(smallEnemyWaveCount > 3)
-                    {
-                        bigEnemyCount = 0;
-                    }
+                    bigEnemyCount = 0;
                     
+                }
+            }
+
+            if (wave == 3)
+            {
+                if (bigEnemyCount < 3)
+                {
+                    bigEnemyCount++;
+                }
+                else
+                {
+                    stopBigEnemySpawning =true;
+                    bigEnemyCount = 0;
                 }
             }
             
@@ -373,6 +464,8 @@ namespace Thunder_Fighter
 
         private void spawnBossEnemy()
         {
+            if(stopBossEnemySpawning) return;
+
             int x = plMain.Width / 2 - 175;
             int y = -400;
             Enemy boss = new BossEnemy(x, y);
@@ -389,8 +482,15 @@ namespace Thunder_Fighter
 
         public void ShowWave(int number)
         {
-            waveTextContent = $"WAVE {number}/4";
-            waveTextStartTime = DateTime.Now;
+            if (number <= 3)
+            {
+                waveTextContent = $"WAVE {number}/4";
+            }
+            else
+            {
+                waveTextContent = "FINAL BOSS";
+            }
+                waveTextStartTime = DateTime.Now;
             showWaveText = true;
         }
 
